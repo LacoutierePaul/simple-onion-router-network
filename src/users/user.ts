@@ -7,6 +7,11 @@ export type SendMessageBody = {
   destinationUserId: number;
 };
 
+export var lastReceivedEncryptedMessage : string | null = null;
+export var lastReceivedDecryptedMessage : string | null = null;
+export var lastMessageDestination : string | null = null;
+
+
 export async function user(userId: number) {
   const _user = express();
   _user.use(express.json());
@@ -16,6 +21,16 @@ export async function user(userId: number) {
   _user.get("/status", (req, res) => {
     res.status(200).send("live");
   });
+
+
+  _user.get("/getLastReceivedMessage", (req, res) => {
+    res.status(200).json({result : null})
+  });
+
+  _user.get("/getLastSentMessage", (req, res) => {
+    res.status(200).json({result : null})
+  });
+
 
   const server = _user.listen(BASE_USER_PORT + userId, () => {
     console.log(
