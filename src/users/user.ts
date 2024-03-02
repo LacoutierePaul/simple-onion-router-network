@@ -2,7 +2,6 @@ import bodyParser from "body-parser";
 import express from "express";
 import {BASE_ONION_ROUTER_PORT, BASE_USER_PORT, REGISTRY_PORT} from "../config";
 import {rsaEncrypt, symEncrypt, exportSymKey, createRandomSymmetricKey, importSymKey} from '../crypto';
-import {lastMessageDestination}  from "@/src/onionRouters/simpleOnionRouter";
 import axios from 'axios';
 import { Node } from '../registry/registry';
 import {error} from "console";
@@ -82,12 +81,9 @@ export async function user(userId: number) {
 
             // Import the symmetric key back to a CryptoKey
             const symKey = await importSymKey(symKeyString);
-
-            // Encode the destination of each step
-
             // Concatenate and encrypt the message with the symmetric key
             const tempMessage = await symEncrypt(symKey, destination + encryptedMessage);
-
+            // Encode the destination of each step
             destination = String(BASE_ONION_ROUTER_PORT + node.nodeId).padStart(10, '0');
 
 
@@ -99,8 +95,6 @@ export async function user(userId: number) {
         }
         circuit.reverse()
         lastCircuit = circuit;
-
-        // Send the final encrypted message to the entry node's HTTP POST `/message` route
         const entryNode = circuit[0];
         error("Message send to "+entryNode.nodeId)
         if(encryptedMessage!=null) {
