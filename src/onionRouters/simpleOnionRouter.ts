@@ -1,12 +1,16 @@
 import bodyParser from "body-parser";
 import express from "express";
 import {BASE_ONION_ROUTER_PORT, BASE_USER_PORT, REGISTRY_PORT} from "../config";
-import { lastReceivedEncryptedMessage, lastReceivedDecryptedMessage, lastMessageDestination } from "./../users/user";
 import {generateRsaKeyPair, exportPubKey, exportPrvKey, exportSymKey, rsaEncrypt} from '../crypto';
 import axios from 'axios';
 import { rsaDecrypt, symDecrypt, importSymKey } from '../crypto';
 import { error } from "console";
+import {stringify} from "ts-jest";
 
+
+export var lastMessageDestination : number | null = null;
+export var lastReceivedEncryptedMessage : string | null = null;
+export var lastReceivedDecryptedMessage : string | null = null;
 
 export async function simpleOnionRouter(nodeId: number) {
   const onionRouter = express();
@@ -49,27 +53,29 @@ export async function simpleOnionRouter(nodeId: number) {
 
     // Log the received encrypted message
     console.log("Received encrypted message:", message);
-
     try {
       // Decrypt the outer layer of the message with RSA private key
-      error("Error:");
       const decryptedSymKey = await rsaDecrypt(message.slice(0, 344), privateKey);
-      error("Decrypted symmetric key:", decryptedSymKey);
-
       // Decrypt the remaining message with the decrypted symmetric key
       const decryptedMessage = await symDecrypt(decryptedSymKey, message.slice(344));
-      console.log("Decrypted message:", decryptedMessage);
-
+      error("Encrypted message:", message);
       // Extract destination and remaining message
       const destination = parseInt(decryptedMessage.slice(0, 10), 10);
       const remainingMessage = decryptedMessage.slice(10);
-      error("Destination:", destination);
-      error("Remaining message:", remainingMessage);
-
+      error("Decrypted message:", remainingMessage);
+      await error("Actual Node : ", nodeId);
+      await error("Destination:", destination);
+      await error("Remaining message:", remainingMessage);
       // Forward the message to the next destination
       await axios.post(`http://localhost:${destination}/message`, {
         message: remainingMessage,
       });
+        // Update the value of lastReceivedEncryptedMessage
+        lastReceivedEncryptedMessage = message;
+        // Update the value of lastReceivedDecryptedMessage
+        lastReceivedDecryptedMessage = remainingMessage;
+        // Update the value of lastMessageDestination
+        lastMessageDestination = destination;
 
 
       // Send response
