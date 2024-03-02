@@ -4,7 +4,6 @@ import {BASE_ONION_ROUTER_PORT, BASE_USER_PORT, REGISTRY_PORT} from "../config";
 import {rsaEncrypt, symEncrypt, exportSymKey, createRandomSymmetricKey, importSymKey} from '../crypto';
 import axios from 'axios';
 import { Node } from '../registry/registry';
-import {error} from "console";
 
 export type SendMessageBody = {
   message: string;
@@ -40,7 +39,6 @@ export async function user(userId: number) {
 
     _user.post("/message", (req, res) => {
         const {message} = req.body;
-        // Update the value of lastReceivedMessage
         lastReceivedDecryptedMessage = message;
         res.status(200).send("success");
     });
@@ -57,7 +55,6 @@ export async function user(userId: number) {
     _user.post('/sendMessage', async (req, res) => {
         const { message, destinationUserId } = req.body;
         lastSendDecryptedMessage = message;
-
         // Get all nodes with getNodeRegistry
         const response = await axios.get(`http://localhost:${REGISTRY_PORT}/getNodeRegistry`);
         const nodes = response.data.nodes as Node[];
@@ -75,28 +72,22 @@ export async function user(userId: number) {
         for (const node of circuit) {
             // Create a unique symmetric key for each node
             const symKeyCrypto = await createRandomSymmetricKey();
-
             // Export the symmetric key to a string
             const symKeyString = await exportSymKey(symKeyCrypto);
-
             // Import the symmetric key back to a CryptoKey
             const symKey = await importSymKey(symKeyString);
             // Concatenate and encrypt the message with the symmetric key
             const tempMessage = await symEncrypt(symKey, destination + encryptedMessage);
             // Encode the destination of each step
             destination = String(BASE_ONION_ROUTER_PORT + node.nodeId).padStart(10, '0');
-
-
             // Encrypt the symmetric key with the node's RSA public key
             const encryptedSymKey = await rsaEncrypt(symKeyString, node.pubKey);
-
             // Concatenate the encrypted symmetric key with the encrypted message
             encryptedMessage = encryptedSymKey + tempMessage;
         }
         circuit.reverse()
         lastCircuit = circuit;
         const entryNode = circuit[0];
-        error("Message send to "+entryNode.nodeId)
         if(encryptedMessage!=null) {
             await axios.post(`http://localhost:${BASE_ONION_ROUTER_PORT + entryNode.nodeId}/message`, {
                 message: encryptedMessage,
