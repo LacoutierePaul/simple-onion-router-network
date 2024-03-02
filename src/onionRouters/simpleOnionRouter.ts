@@ -50,7 +50,6 @@ export async function simpleOnionRouter(nodeId: number) {
     onionRouter.post('/message', async (req, res) => {
       const { message } = req.body;
       // Log the received encrypted message
-      console.log("Received encrypted message:", message);
       try {
         // Decrypt the outer layer of the message with RSA private key
         const decryptedSymKey = await rsaDecrypt(message.slice(0, 344), privateKey);
