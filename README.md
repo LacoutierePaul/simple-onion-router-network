@@ -1,6 +1,7 @@
 # simple-onion-router-network
 
-[![Node.js](https://img.shields.io/badge/Node.js->=18-green?logo=node.js&style=flat-square)](https://nodejs.org/)  
+[![TypeScript](https://img.shields.io/badge/TypeScript-4.9-blue?logo=typescript&style=flat-square)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js->=18-green?logo=node.js&style=flat-square)](https://nodejs.org/)
 [![Tests](https://img.shields.io/badge/tests-passed-brightgreen?style=flat-square)](#)  
 
 ---
