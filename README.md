@@ -1,4 +1,4 @@
-# simple-onion-router-network
+# 🧅 simple-onion-router-network 🧅
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-4.9-blue?logo=typescript&style=flat-square)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js->=18-green?logo=node.js&style=flat-square)](https://nodejs.org/)
@@ -6,7 +6,7 @@
 
 ---
 
-## Project Overview
+## 🚀 Project Overview
 
 This repository provides the basic structure needed for an onion routing network, including nodes, users, and a nodes registry.
 
@@ -16,7 +16,7 @@ Note: To simplify the implementation, response handling is not covered — the n
 
 ---
 
-## Core Components
+## 🧩 Core Components
 
 - **Nodes:** Onion routers that forward traffic between other nodes or between users and nodes (entry and exit nodes).
 - **Users:** Network users who can send and receive messages.
@@ -24,7 +24,7 @@ Note: To simplify the implementation, response handling is not covered — the n
 
 ---
 
-## What I Did
+## ✅ What I Did
 
 - Implemented the inner workings of the onion routing protocol as per project guidelines.
 - Ensured secure routing of messages through the network using layered encryption.
@@ -33,7 +33,7 @@ Note: To simplify the implementation, response handling is not covered — the n
 
 ---
 
-## Setup & Usage
+## ⚙️ Setup & Usage
 
 ### Requirements
 - Node.js version **18** or higher.
@@ -55,7 +55,7 @@ npm run start
 
 ---
 
-## Grading
+## 🏆 Grading
 
 - Successfully passed all unit tests (20/20 points).  
 - Implementation is original and completed individually, following the exercise rules.
